@@ -1,0 +1,2 @@
+import { authenticate,requirePermission,requireTenant } from "@/common/auth/principal";import { problem,success } from "@/common/http/response";import { auditQueryDto } from "@/modules/reporting/schemas";import { listAuditLogs } from "@/modules/reporting/service";
+export const runtime="nodejs";export async function GET(r:Request){try{const p=await authenticate(r);requirePermission(p,"audit:read");const q=auditQueryDto.parse(Object.fromEntries(new URL(r.url).searchParams));return success(r,await listAuditLogs(requireTenant(p),q));}catch(e){return problem(r,e);}}

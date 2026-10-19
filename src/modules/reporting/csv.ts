@@ -1,0 +1,2 @@
+function csvCell(value:unknown){let text=value==null?"":value instanceof Date?value.toISOString():String(value);if(/^[=+\-@]/.test(text))text=`'${text}`;return `"${text.replaceAll('"','""')}"`;}
+export function attendanceCsv(rows:Array<Record<string,unknown>>){const columns=["date","sessionType","subjectType","subjectId","referenceNo","name","status","checkInAt","checkOutAt","source"];return[columns.join(","),...rows.map(row=>columns.map(column=>csvCell(row[column])).join(","))].join("\r\n");}

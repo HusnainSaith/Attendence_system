@@ -1,0 +1,5 @@
+import { z } from "zod";import { dateOnly,nonEmpty,subjectType,uuid } from "@/common/dto/primitives";
+export const attendanceReportQueryDto=z.strictObject({from:dateOnly,to:dateOnly,campusId:uuid.optional(),academicYearId:uuid.optional(),classId:uuid.optional(),sectionId:uuid.optional(),subjectType:subjectType.optional()}).superRefine((v,c)=>{if(v.to<v.from)c.addIssue({code:"custom",path:["to"],message:"to must not precede from"});const days=(Date.parse(v.to)-Date.parse(v.from))/86400000;if(days>366)c.addIssue({code:"custom",path:["to"],message:"Report range cannot exceed 366 days"});});
+export const auditQueryDto=z.strictObject({from:dateOnly.optional(),to:dateOnly.optional(),action:z.string().trim().max(120).optional(),resourceType:z.string().trim().max(80).optional(),actorId:uuid.optional(),limit:z.coerce.number().int().min(1).max(500).default(100)});
+export const securityQueryDto=z.strictObject({severity:z.enum(["LOW","MEDIUM","HIGH","CRITICAL"]).optional(),unresolved:z.stringbool().optional(),limit:z.coerce.number().int().min(1).max(500).default(100)});
+export const resolveSecurityEventDto=z.strictObject({reason:nonEmpty(1000)});
